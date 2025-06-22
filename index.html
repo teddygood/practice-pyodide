@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pyodide Demo with NumPy</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+  <script>
+    async function main() {
+      const pyodide = await loadPyodide();
+      const version = pyodide.runPython(`
+import sys
+sys.version
+      `);
+      document.getElementById('version').textContent = version;
+      document.getElementById('calc').disabled = false;
+      window.calculate = async function() {
+        const num1 = parseFloat(document.getElementById('num1').value);
+        const num2 = parseFloat(document.getElementById('num2').value);
+        const op = document.getElementById('op').value;
+        const code = `
+import numpy as np
+ops = {'add': np.add, 'sub': np.subtract, 'mul': np.multiply, 'div': np.divide}
+result = ops['${op}'](${num1}, ${num2})
+result
+        `;
+        const result = await pyodide.runPythonAsync(code);
+        document.getElementById('output').textContent = result;
+      };
+    }
+    main();
+  </script>
+</head>
+<body>
+  <h1>Pyodide Demo</h1>
+  <p>Python version: <span id="version"></span></p>
+
+  <h2>NumPy Calculator</h2>
+  <p>Enter two numbers and choose an operation.</p>
+  <input type="number" id="num1" value="1">
+  <select id="op">
+    <option value="add">+</option>
+    <option value="sub">-</option>
+    <option value="mul">*</option>
+    <option value="div">/</option>
+  </select>
+  <input type="number" id="num2" value="2">
+  <button id="calc" disabled onclick="calculate()">Calculate</button>
+  <pre id="output"></pre>
+</body>
+</html>
