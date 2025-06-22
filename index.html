@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pyodide Minimal Example</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+  <script>
+    async function main() {
+      const pyodide = await loadPyodide();
+      const result = pyodide.runPython(`
+import sys
+sys.version
+`);
+      document.getElementById('output').textContent = result;
+    }
+    main();
+  </script>
+</head>
+<body>
+  <h1>Pyodide Demo</h1>
+  <p id="output"></p>
+</body>
+</html>
